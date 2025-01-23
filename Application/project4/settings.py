@@ -101,6 +101,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# To hand cache when dynamically going through the social network
+# to prevent causing some features to not work
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

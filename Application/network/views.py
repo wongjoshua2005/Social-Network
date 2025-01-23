@@ -3,17 +3,13 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django import forms
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.serializers import serialize
-from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.db.models import Q
 import json
 
+# To retrieve the data from the database depending on the Django model
 from .models import User, Post, Follow, LikeTracker
-
 
 def index(request):           
     # To  check if the user made any changes to their account or post
