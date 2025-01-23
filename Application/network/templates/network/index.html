@@ -1,0 +1,94 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <!-- To display all the posts in the social network when the user loads
+     into the website -->
+    <div id="allPosts">
+        <h1>All Posts</h1>
+
+        {% for post in pageObj %}
+            <div class="post">
+                <h4 id="username">
+                    {{ post.user }}
+                </h4>
+
+                <!-- To allow the user to edit their own post if it's currently
+                 the session user right now logged in on the social network -->
+                {% if user.is_authenticated and post.user == currentUser.username %}
+                    <p class="editPost">Edit</p>
+                {% endif %}
+
+                <p id="postContent">{{ post.description }}</p>
+
+                <!-- To keep track of the postID for the social network
+                 and allow for liking the post, comment, and the date when
+                 posted -->
+                <p style="display: none;" class="postID">{{ post.id }}</p>
+                <p>{{ post.postDate|date:"F j, Y, g:i a" }}</p>
+                <p class="likeBtn">❤️ {{ post.likes }}</p>
+                <p class="comment">Comment</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- To display the specific user's profile if the user clicked on
+     a profile from a post -->
+    <div id="profile">
+        <!-- To keep track of which user is currently logged in and what
+         that user is looking at which profile -->
+        <h1 id="sessionUser" style="display: none;">{{currentUser.username}}</h1>    
+        <h1 id="postUser">N/A</h1>
+
+        <!-- To keep track if the user followed this user or not -->
+        {% if user.is_authenticated %}
+            <form class="followForm" action="{% url 'index' %}" method="post">
+                {% csrf_token %}
+
+                <input id="hiddenFollow" type="hidden" name="follow" value="followBtn">
+                <button id="followUser" type="submit">Follow</button>    
+            </form>   
+        {% endif %}
+
+        <!-- To let JavaScript display how many followers and following the
+         specific user currently has -->
+        <h5 id="userFollowers"></h5>
+        <h5 id="userFollowing"></h5>
+
+        <!-- To let JavaScript display all the posts the user currently has -->
+        <h5>All Posts:</h5>
+        <div id="postContainer">
+        </div>
+    </div>
+
+ <!-- To limit the amount of posts to only 10 before adding pages
+     to dynamically go through each page of posts -->
+{% if user.is_authenticated %}
+    <div class="pagination">
+        <span class="step-links">
+            <!-- To display the buttons necessary to go through the posts
+             in pages -->
+            {% if pageObj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ pageObj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <!-- To display what page the user is currently in -->
+            <span class="current">
+                Page {{ pageObj.number }} of {{ pageObj.paginator.num_pages }}.
+            </span>
+
+            <!-- To display the buttons necessary to go through the posts
+             in pages -->
+            {% if pageObj.has_next %}
+                <a href="?page={{ pageObj.next_page_number }}">next</a>
+                <a href="?page={{ pageObj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

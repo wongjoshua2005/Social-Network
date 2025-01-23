@@ -1,0 +1,66 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+{% if user.is_authenticated %}
+    <div id="allPosts">
+        <h1>Your Follow Posts</h1>
+
+        <h3>Total Users You Follow: {{ totalFollowing }}</h3>
+
+        <!-- To display all the posts that the user currently follows -->
+        {% for post in pageObj %}
+            <div class="post">
+                <h4 id="username">
+                    {{ post.user }}
+                </h4>
+
+                <!-- To allow the user to edit their own post if it's currently
+                 the session user right now logged in on the social network -->
+                {% if user.is_authenticated and post.user == currentUser.username %}
+                    <p class="editPost">Edit</p>
+                {% endif %}
+
+                <p id="postContent">{{ post.description }}</p>
+
+                <!-- To keep track of the postID for the social network
+                 and allow for liking the post, comment, and the date when
+                 posted -->
+                <p style="display: none;" class="postID">{{ post.id }}</p>
+                <p>{{ post.postDate|date:"F j, Y, g:i a" }}</p>
+                <p class="likeBtn">❤️ {{ post.likes }}</p>
+                <p class="comment">Comment</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- To limit the amount of posts to only 10 before adding pages
+     to dynamically go through each page of posts -->
+    <div class="pagination">
+        <span class="step-links">
+            <!-- To display the buttons necessary to go through the posts
+             in pages -->
+            {% if pageObj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ pageObj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <!-- To display what page the user is currently in -->
+            <span class="current">
+                Page {{ pageObj.number }} of {{ pageObj.paginator.num_pages }}.
+            </span>
+
+            <!-- To display the buttons necessary to go through the posts
+             in pages -->
+            {% if pageObj.has_next %}
+            <a href="?page={{ pageObj.next_page_number }}">next</a>
+            <a href="?page={{ pageObj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

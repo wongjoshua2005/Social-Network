@@ -1,0 +1,10 @@
+/* To add some style to the post and the website */
+.post {
+    border: 1px solid black;
+    margin: 1%;
+}
+
+a {
+    color: black;
+    text-decoration:none; 
+}
